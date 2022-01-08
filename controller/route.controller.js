@@ -188,10 +188,15 @@ async function planRoute(req, res){
                                         
                                         
                                             let resultArray = path.map(i=>pointsArray[i]);
+
+                                            resultArray = resultArray.map(([i, j])=>([j,i]));
+
+
+                                            getRouteAzure(origin, destination, resultArray.slice(1,-1), departAt )
+                                                .then(result => {
+                                                    res.status(200).json({resultArray, result});
+                                                });
                                         
-                                            res.status(200).json(resultArray);
-                                        
-                                            
 
                                         })
 
