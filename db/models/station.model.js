@@ -63,7 +63,7 @@ class Station{
   getStationName(station_id){
     return new Promise((resolve, reject) => {
 
-      const searchQuery = 'SELECT name FROM public.charging_station WHERE id=$1';
+      const searchQuery = 'SELECT * FROM public.charging_station WHERE id=$1';
 
        pool
           .connect()

@@ -49,6 +49,10 @@ async function getBookingHistory(req,res){
                     await station.getStationName(obj.rows[i].station_id)
                         .then(result1 => {
                             obj.rows[i]['station_name'] = result1.rows[0].name;
+                            obj.rows[i]['address'] = result1.rows[0].address
+                            obj.rows[i]['latitude'] = result1.rows[0].latitude;
+                            obj.rows[i]['longitude'] = result1.rows[0].longitude;
+                            // console.log(result1);
                         });
                 }
 
