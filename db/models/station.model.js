@@ -56,6 +56,34 @@ class Station{
                 reject(error)
               })
       });
+
+  }
+
+
+  getStationName(station_id){
+    return new Promise((resolve, reject) => {
+
+      const searchQuery = 'SELECT * FROM public.charging_station WHERE id=$1';
+
+       pool
+          .connect()
+          .then(conn => {
+            conn
+              .query(searchQuery, [station_id])
+              .then(result => {
+                conn.release()
+                resolve(result)
+              })
+              .catch(error => {
+                conn.release()
+                reject(error)
+              })
+          })
+          .catch(error => {
+            conn.release()
+            reject(error)
+          })
+    });
   }
 
   findStationsBelt(points, dist){

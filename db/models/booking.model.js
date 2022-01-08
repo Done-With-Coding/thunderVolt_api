@@ -64,7 +64,7 @@ class Booking{
         console.log(mobile_no);
         return new Promise((resolve, reject) => {
 
-            const searchQuery = 'SELECT * FROM public.bookings WHERE mobile_no = $1 order by b_date desc, slot desc;';
+            const searchQuery = 'SELECT * FROM public.bookings WHERE mobile_no = CAST($1 AS numeric) order by b_date desc, slot desc;';
 
              pool
                 .connect()
