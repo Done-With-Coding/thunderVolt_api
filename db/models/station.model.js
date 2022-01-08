@@ -31,6 +31,33 @@ class Station{
                 })
         });
     }
+
+    findNearestStation(radius){
+      return new Promise((resolve, reject) => {
+
+          const searchQuery = 'SELECT * FROM public.charging_station WHERE ST_DWithin(geog, ST_MakePoint($1,$2)::geography, $3)';
+
+           pool
+              .connect()
+              .then(conn => {
+                conn
+                  .query(searchQuery, [this.long, this.lat, radius])
+                  .then(result => {
+                    conn.release()
+                    resolve(result)
+                  })
+                  .catch(error => {
+                    conn.release()
+                    reject(error)
+                  })
+              })
+              .catch(error => {
+                conn.release()
+                reject(error)
+              })
+      });
+  }
+
     
     
 }

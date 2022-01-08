@@ -19,4 +19,21 @@ async function addStation(req, res) {
     }
 }
 
-module.exports =  {addStation};
+async function findNearbyStation(req, res) {
+    try{
+        const {lat,long,radius} = req.body;
+        
+        const station = new Station(lat,long);
+
+        station.findNearestStation(radius)
+            .then(stations => {
+                res.status(200).json(stations);
+            })
+    }
+    catch(err){
+        console.log(err);
+        res.status(500).json("error: Internal Server Error");
+    }
+}
+
+module.exports =  {addStation, findNearbyStation};
