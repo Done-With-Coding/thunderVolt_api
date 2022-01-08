@@ -58,6 +58,67 @@ class Station{
       });
   }
 
+  findStationsBelt(points, dist){
+    return new Promise((resolve, reject) => {
+
+
+        const searchQuery = "select public.charging_station.*, ST_Distance(ST_GeomFromGeoJSON($1)::geography, public.charging_station.geog) as dist_m "+
+        "from  public.charging_station "+
+        "where ST_DWithin(ST_GeomFromGeoJSON($1)::geography, public.charging_station.geog, $2) "+
+        "order by ST_LineLocatePoint(ST_GeomFromGeoJSON($1), public.charging_station.geog::geometry), "+
+                "ST_Distance(ST_GeomFromGeoJSON($1)::geography, public.charging_station.geog);"
+
+        
+
+         pool
+            .connect()
+            .then(conn => {
+              conn
+                .query(searchQuery, [points, dist])
+                .then(result => {
+                  conn.release()
+                  resolve(result)
+                })
+                .catch(error => {
+                  conn.release()
+                  reject(error)
+                })
+            })
+            .catch(error => {
+              conn.release()
+              reject(error)
+            })
+    });
+  }
+
+  findStationInterpolant(LineString, divDist, pointRadius){
+
+      return new Promise((resolve, reject) => {
+
+          const searchQuery = "SELECT * "+
+              "FROM public.charging_station "+ 
+              "WHERE ST_DWithin(geog, ST_LineInterpolatePoints(ST_GeomFromGeoJSON($1),$2)::geography, $3); ";
+
+           pool
+              .connect()
+              .then(conn => {
+                conn
+                  .query(searchQuery, [LineString, divDist, pointRadius])
+                  .then(result => {
+                    conn.release()
+                    resolve(result)
+                  })
+                  .catch(error => {
+                    conn.release()
+                    reject(error)
+                  })
+              })
+              .catch(error => {
+                conn.release()
+                reject(error)
+              })
+      });
+  }
     
     
 }
