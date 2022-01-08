@@ -41,7 +41,10 @@ async function getBookingHistory(req,res){
         const booking = new Booking();
         booking.getBookingHistory(mobile_no)
             .then(result => {
-                res.status(200).json(result);
+                let cur_date = new Date();
+                let pastBooking = result.rows.filter(i=> new Date(i.b_date).getDate() < cur_date.getDate());
+                let booking =  result.rows.filter(i=> new Date(i.b_date).getDate() >= cur_date.getDate());
+                res.status(200).json({pastBooking, booking});
             });
         
     }  
