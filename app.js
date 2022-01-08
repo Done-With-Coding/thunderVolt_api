@@ -13,10 +13,10 @@ app.use(cors());
 app.use(express.static('public'));
 app.use(morgan('dev'));
 
-
-const {station} = require('./routes');
+const {station, booking} = require('./routes');
 
 app.use("/station/", station);
+app.use("/booking/", booking);
 
 app.listen(3000, () => {
     console.log('App listening on port 3000');
