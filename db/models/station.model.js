@@ -86,6 +86,32 @@ class Station{
     });
   }
 
+  getStationNameGeom(lat, long){
+    return new Promise((resolve, reject) => {
+
+      const searchQuery = 'SELECT * FROM public.charging_station WHERE latitude=$1 and longitude=$2';
+
+       pool
+          .connect()
+          .then(conn => {
+            conn
+              .query(searchQuery, [lat, long])
+              .then(result => {
+                conn.release()
+                resolve(result)
+              })
+              .catch(error => {
+                conn.release()
+                reject(error)
+              })
+          })
+          .catch(error => {
+            conn.release()
+            reject(error)
+          })
+    });
+  }
+
   findStationsBelt(points, dist){
     return new Promise((resolve, reject) => {
 

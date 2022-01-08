@@ -126,6 +126,11 @@ async function planRoute(req, res){
     try{
         let {origin, destination, departAt, range, beltRadius, pointRadius} = req.body;
 
+        beltRadius = 5000;
+        pointRadius = 15000;
+
+        departAt = new Date(departAt);
+
         if(typeof(wayPoints) === 'undefined'){
             wayPoints = [];
         }
@@ -189,12 +194,26 @@ async function planRoute(req, res){
                                         
                                             let resultArray = path.map(i=>pointsArray[i]);
 
+                                            let stationArray = [];
+
+                                            let station1 = new Station(); 
+
+                                            
                                             resultArray = resultArray.map(([i, j])=>([j,i]));
+
+                                            for(let i = 1; i<resultArray.length-1; i++){
+                                                station1.getStationNameGeom(resultArray[i][0], resultArray[i][1])
+                                                    .then(result => {
+                                                        // console.log(result);
+                                                        stationArray.push(result.rows[0]);
+                                                    } ) 
+                                            }
+
 
 
                                             getRouteAzure(origin, destination, resultArray.slice(1,-1), departAt )
                                                 .then(result => {
-                                                    res.status(200).json({resultArray, result});
+                                                    res.status(200).json({stationArray, result});
                                                 });
                                         
 
